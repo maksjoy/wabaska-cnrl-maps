@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CNRL Wells">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="apple-touch-icon" sizes="167x167" href="icon-167.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>CNRL Wells — Pelican Lake</title>
+<script>
+  (function() {
+    try {
+      var stored = localStorage.getItem('theme');
+      var theme = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    } catch (e) {}
+  })();
+</script>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg-2: #141414;
+    --bg-3: #1d1d1d;
+    --bg-4: #262626;
+    --border: #2a2a2a;
+    --border-2: #3a3a3a;
+    --text: #f2f2f2;
+    --text-dim: #8a8a8a;
+    --text-dim-2: #b4b4b4;
+    --orange: #ff6a00;
+    --orange-dim: #cc5500;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --red: #ef4444;
+    --shadow-sheet: 0 8px 24px rgba(0,0,0,0.5);
+    --backdrop: rgba(0,0,0,0.7);
+  }
+
+  :root[data-theme="light"] {
+    --bg: #fafafa;
+    --bg-2: #ffffff;
+    --bg-3: #f0f0f0;
+    --bg-4: #e4e4e4;
+    --border: #dcdcdc;
+    --border-2: #c4c4c4;
+    --text: #0f0f0f;
+    --text-dim: #6b6b6b;
+    --text-dim-2: #3d3d3d;
+    --orange: #e35a00;
+    --orange-dim: #b84800;
+    --green: #15803d;
+    --yellow: #a16207;
+    --red: #b91c1c;
+    --shadow-sheet: 0 8px 24px rgba(0,0,0,0.12);
+    --backdrop: rgba(20,20,20,0.4);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { height: 100%; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: ui-monospace, "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    font-size: 15px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior: none;
+    touch-action: manipulation;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  /* ========== HEADER ========== */
+  .header {
+    padding: calc(env(safe-area-inset-top) + 12px) 16px 10px;
+    background: var(--bg);
+    position: sticky; top: 0; z-index: 20;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; letter-spacing: 0.02em;
+    font-size: 17px;
+  }
+  .brand-dot {
+    width: 8px; height: 8px; background: var(--orange);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(255, 106, 0, 0.6);
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+  .brand-title { color: var(--text); }
+  .brand-sub {
+    color: var(--text-dim); font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; margin-left: auto;
+  }
+
+  .theme-toggle {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    color: var(--text-dim-2);
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+    font-family: inherit;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .theme-toggle:active { transform: scale(0.94); }
+  .theme-toggle:hover { color: var(--orange); border-color: var(--orange); }
+  .theme-toggle svg { width: 18px; height: 18px; }
+  .theme-toggle .icon-sun { display: none; }
+  .theme-toggle .icon-moon { display: block; }
+  :root[data-theme="light"] .theme-toggle .icon-sun { display: block; }
+  :root[data-theme="light"] .theme-toggle .icon-moon { display: none; }
+
+  .stats {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .stats-n { color: var(--orange); font-weight: 700; }
+
+  /* ========== SEARCH ========== */
+  .search-wrap {
+    padding: 12px 16px 10px;
+    background: var(--bg);
+    position: sticky; top: calc(env(safe-area-inset-top) + 61px); z-index: 19;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .search-inner { position: relative; display: flex; align-items: center; }
+
+  .search-icon {
+    position: absolute; left: 14px;
+    color: var(--text-dim); pointer-events: none; z-index: 1;
+    width: 18px; height: 18px;
+  }
+
+  .search {
+    width: 100%;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 14px 44px 14px 42px;
+    font-size: 16px;
+    font-family: inherit;
+    border-radius: 10px;
+    outline: none;
+    letter-spacing: 0.02em;
+    min-height: 48px;
+  }
+  .search:focus { border-color: var(--orange); background: var(--bg-3); }
+  .search::placeholder { color: var(--text-dim); }
+  .search::-webkit-search-decoration,
+  .search::-webkit-search-cancel-button { display: none; -webkit-appearance: none; }
+
+  .search-clear {
+    position: absolute; right: 6px;
+    width: 36px; height: 36px;
+    border: none; background: var(--bg-4);
+    color: var(--text);
+    border-radius: 50%;
+    display: none;
+    align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px;
+    font-family: inherit;
+  }
+  .search-clear.show { display: flex; }
+  .search-clear:active { background: var(--border-2); }
+
+  /* ========== FILTERS ========== */
+  .filters {
+    display: flex; gap: 8px;
+    padding: 10px 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    -webkit-overflow-scrolling: touch;
+  }
+  .filters::-webkit-scrollbar { display: none; }
+
+  .chip {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    color: var(--text-dim-2);
+    font-size: 12px;
+    font-family: inherit;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    min-height: 36px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .chip:active { transform: scale(0.96); }
+  .chip.active {
+    background: var(--orange); border-color: var(--orange);
+    color: #000; font-weight: 700;
+  }
+  .chip-count {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-weight: 700;
+    background: var(--bg-4); color: var(--text);
+  }
+  .chip.active .chip-count { background: rgba(0,0,0,0.2); color: #000; }
+
+  /* ========== HINT ========== */
+  .hint {
+    padding: 20px 16px 24px;
+    color: var(--text-dim-2);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .hint-title {
+    color: var(--orange); text-transform: uppercase;
+    letter-spacing: 0.12em; font-size: 10px;
+    margin-bottom: 10px; font-weight: 700;
+  }
+  .hint code {
+    background: var(--bg-3); padding: 2px 7px; border-radius: 4px;
+    color: var(--orange); font-size: 12px; font-weight: 600;
+  }
+  .hint p { margin: 0 0 8px; }
+
+  /* ========== LIST ========== */
+  .list { list-style: none; padding: 0 0 calc(env(safe-area-inset-bottom) + 24px); margin: 0; }
+
+  .well {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+    min-height: 64px;
+  }
+  .well:active { background: var(--bg-2); }
+
+  .well-status {
+    width: 4px; align-self: stretch;
+    border-radius: 2px;
+    flex-shrink: 0;
+    min-height: 40px;
+  }
+  .s-PUMP, .s-FLOW { background: var(--green); box-shadow: 0 0 8px rgba(34, 197, 94, 0.4); }
+  .s-SUSP, .s-DRLC, .s-TSTCMP { background: var(--yellow); }
+  .s-ABD, .s-ABZONE, .s-ABDWHP { background: var(--red); opacity: 0.4; }
+  .s-NA { background: var(--text-dim); opacity: 0.5; }
+
+  .well-main { flex: 1; min-width: 0; }
+  .well-id {
+    font-weight: 700; font-size: 16px;
+    color: var(--text); letter-spacing: 0.02em;
+  }
+  .well-name {
+    font-size: 11px; color: var(--text-dim);
+    margin-top: 3px; letter-spacing: 0.04em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .well-meta {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+    flex-shrink: 0;
+  }
+  .badge {
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 3px 7px;
+    border-radius: 3px;
+    background: var(--bg-3);
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+  .badge.PUMP, .badge.FLOW { background: rgba(34, 197, 94, 0.15); color: var(--green); }
+  .badge.SUSP, .badge.DRLC { background: rgba(234, 179, 8, 0.15); color: var(--yellow); }
+  .badge.ABD, .badge.ABZONE, .badge.ABDWHP { background: rgba(239, 68, 68, 0.1); color: var(--red); }
+
+  .well-dist {
+    font-size: 11px; color: var(--orange); font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .no-results {
+    padding: 60px 20px; text-align: center;
+    color: var(--text-dim); font-size: 13px;
+    line-height: 1.6;
+  }
+  .no-results-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.4; }
+
+  /* ========== SHEET ========== */
+  .sheet-backdrop {
+    position: fixed; inset: 0;
+    background: var(--backdrop);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 100;
+  }
+  .sheet-backdrop.open { opacity: 1; pointer-events: auto; }
+
+  .sheet {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    background: var(--bg-2);
+    border-top: 1px solid var(--border-2);
+    border-radius: 18px 18px 0 0;
+    padding: 8px 20px calc(24px + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+    z-index: 101;
+    max-height: 88vh;
+    max-height: 88dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .sheet.open { transform: translateY(0); }
+
+  .sheet-handle {
+    width: 40px; height: 4px;
+    background: var(--border-2);
+    border-radius: 2px;
+    margin: 0 auto 18px;
+  }
+
+  .sheet-title {
+    font-size: 24px; font-weight: 700;
+    letter-spacing: 0.02em;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .sheet-name {
+    font-size: 12px; color: var(--text-dim);
+    letter-spacing: 0.04em;
+    margin-bottom: 18px;
+    word-break: break-word;
+  }
+
+  .sheet-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+    background: var(--border);
+    border-radius: 8px; overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .sheet-cell { background: var(--bg-3); padding: 12px 14px; }
+  .sheet-label {
+    font-size: 10px; color: var(--text-dim);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 4px; font-weight: 600;
+  }
+  .sheet-value {
+    font-size: 14px; color: var(--text); font-weight: 700;
+    word-break: break-all;
+  }
+
+  .sheet-actions { display: flex; flex-direction: column; gap: 10px; }
+
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%;
+    padding: 16px;
+    min-height: 54px;
+    background: var(--orange);
+    border: none;
+    border-radius: 10px;
+    color: #000;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: inherit;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .btn:active { background: var(--orange-dim); transform: scale(0.98); }
+  .btn.secondary {
+    background: var(--bg-3); color: var(--text);
+    border: 1px solid var(--border-2);
+  }
+  .btn.secondary:active { background: var(--border); }
+  .btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+  /* ========== INSTALL BANNER ========== */
+  .install {
+    padding: 12px 16px;
+    background: linear-gradient(180deg, var(--bg-3), var(--bg-2));
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-dim-2);
+    display: flex; align-items: center; gap: 10px;
+    line-height: 1.5;
+  }
+  .install-icon { color: var(--orange); flex-shrink: 0; }
+  .install-text { flex: 1; }
+  .install-text b { color: var(--text); }
+  .install-close {
+    background: none; border: none;
+    color: var(--text-dim);
+    font-size: 20px; cursor: pointer;
+    padding: 4px 8px; line-height: 1;
+    flex-shrink: 0;
+  }
+
+  /* ========== TOAST ========== */
+  .toast {
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom) + 20px);
+    left: 50%; transform: translateX(-50%) translateY(120%);
+    background: var(--bg-4);
+    border: 1px solid var(--border-2);
+    color: var(--text);
+    padding: 12px 20px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    z-index: 200;
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: var(--shadow-sheet);
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <span class="brand-dot"></span>
+    <span class="brand-title">CNRL WELLS</span>
+    <span class="brand-sub">Pelican Lake</span>
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle light/dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </button>
+  </div>
+  <div class="stats" id="stats">Loading database…</div>
+</div>
+
+<div id="install-banner" class="install" style="display:none">
+  <svg class="install-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v14M5 9l7 7 7-7M5 22h14"/></svg>
+  <span class="install-text">Install as app: <b>Share → Add to Home Screen</b></span>
+  <button class="install-close" onclick="document.getElementById('install-banner').style.display='none'; localStorage.setItem('hideInstall','1')">×</button>
+</div>
+
+<div class="search-wrap">
+  <div class="search-inner">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <input
+      id="q"
+      class="search"
+      type="search"
+      inputmode="text"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="characters"
+      spellcheck="false"
+      placeholder="Search: 6-4-77-23 or PELICAN"
+    >
+    <button id="clear-btn" class="search-clear" aria-label="Clear">×</button>
+  </div>
+</div>
+
+<div class="filters" id="filters">
+  <div class="chip active" data-f="all">All <span class="chip-count" id="c-all">0</span></div>
+  <div class="chip" data-f="active">Active <span class="chip-count" id="c-active">0</span></div>
+  <div class="chip" data-f="susp">Susp / D&amp;C <span class="chip-count" id="c-susp">0</span></div>
+  <div class="chip" data-f="near">📍 Nearest</div>
+  <div class="chip" data-f="abd">Abandoned <span class="chip-count" id="c-abd">0</span></div>
+</div>
+
+<div id="hint" class="hint">
+  <div class="hint-title">How to search</div>
+  <p>By location: <code>6-4-77-23</code>, <code>13-18-80-25</code></p>
+  <p>By name: <code>PELICAN</code>, <code>BRINT</code>, <code>SANDY</code></p>
+  <p>Or tap <b>📍 Nearest</b> to see the 50 closest wells to your current location.</p>
+</div>
+
+<ul id="list" class="list"></ul>
+
+<div id="backdrop" class="sheet-backdrop"></div>
+<div id="sheet" class="sheet">
+  <div class="sheet-handle"></div>
+  <div id="sheet-content"></div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+let WELLS = [];
+let userPos = null;
+let currentFilter = "all";
+let currentQuery = "";
+const $ = (id) => document.getElementById(id);
+
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+// ========== THEME ==========
+function applyTheme(theme) {
+  if (theme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'light' ? '#fafafa' : '#0a0a0a');
+}
+
+function currentTheme() {
+  return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+}
+
+applyTheme(currentTheme());
+
+$("theme-toggle").addEventListener("click", () => {
+  const next = currentTheme() === 'light' ? 'dark' : 'light';
+  applyTheme(next);
+  try { localStorage.setItem('theme', next); } catch (e) {}
+  vibrate(10);
+});
+
+// Follow system changes when user hasn't explicitly chosen
+if (window.matchMedia) {
+  const mq = window.matchMedia('(prefers-color-scheme: light)');
+  mq.addEventListener && mq.addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) applyTheme(e.matches ? 'light' : 'dark');
+  });
+}
+
+// ========== LOAD DATA ==========
+fetch("wells.json")
+  .then(r => r.json())
+  .then(data => {
+    WELLS = data;
+    updateCounts();
+    $("stats").innerHTML = `<span class="stats-n">${data.length}</span> wells in database · Updated 04.2026`;
+    render();
+  })
+  .catch(e => {
+    $("stats").textContent = "Error loading data. Check your connection.";
+  });
+
+function updateCounts() {
+  const counts = { all: WELLS.length, active: 0, susp: 0, abd: 0 };
+  WELLS.forEach(w => {
+    if (w.st === "PUMP" || w.st === "FLOW") counts.active++;
+    else if (w.st === "SUSP" || w.st === "DRL&C" || w.st === "TSTCMP") counts.susp++;
+    else if (w.st === "ABD" || w.st === "ABZONE" || w.st === "ABDWHP") counts.abd++;
+  });
+  $("c-all").textContent = counts.all;
+  $("c-active").textContent = counts.active;
+  $("c-susp").textContent = counts.susp;
+  $("c-abd").textContent = counts.abd;
+}
+
+// ========== FILTERS ==========
+document.querySelectorAll(".chip").forEach(chip => {
+  chip.addEventListener("click", () => {
+    document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    currentFilter = chip.dataset.f;
+    vibrate(10);
+    if (currentFilter === "near") requestLocation();
+    else render();
+  });
+});
+
+$("q").addEventListener("input", (e) => {
+  currentQuery = e.target.value.trim().toUpperCase();
+  $("clear-btn").classList.toggle("show", currentQuery.length > 0);
+  render();
+});
+
+$("clear-btn").addEventListener("click", () => {
+  $("q").value = "";
+  currentQuery = "";
+  $("clear-btn").classList.remove("show");
+  $("q").focus();
+  render();
+});
+
+// ========== GEOLOCATION ==========
+function requestLocation() {
+  if (!navigator.geolocation) {
+    toast("Geolocation not supported");
+    return;
+  }
+  $("stats").textContent = "Getting your location…";
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      userPos = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+      const acc = Math.round(pos.coords.accuracy);
+      $("stats").innerHTML = `📍 Your position: ${userPos.lat.toFixed(4)}, ${userPos.lon.toFixed(4)} · ±${acc}m`;
+      vibrate([10, 30, 10]);
+      render();
+    },
+    (err) => {
+      toast("Location access denied");
+      currentFilter = "all";
+      document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+      document.querySelector('[data-f="all"]').classList.add("active");
+      render();
+    },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 }
+  );
+}
+
+// ========== HAVERSINE ==========
+function distKm(a, b) {
+  const R = 6371;
+  const dLat = (b.lat - a.lat) * Math.PI / 180;
+  const dLon = (b.lon - a.lon) * Math.PI / 180;
+  const la1 = a.lat * Math.PI / 180;
+  const la2 = b.lat * Math.PI / 180;
+  const x = Math.sin(dLat/2)**2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(x));
+}
+
+// ========== RENDER ==========
+function render() {
+  let list = WELLS.slice();
+
+  if (currentFilter === "active") {
+    list = list.filter(w => w.st === "PUMP" || w.st === "FLOW");
+  } else if (currentFilter === "susp") {
+    list = list.filter(w => w.st === "SUSP" || w.st === "DRL&C" || w.st === "TSTCMP");
+  } else if (currentFilter === "abd") {
+    list = list.filter(w => w.st === "ABD" || w.st === "ABZONE" || w.st === "ABDWHP");
+  }
+
+  if (currentQuery) {
+    const q = currentQuery;
+    list = list.filter(w =>
+      w.id.toUpperCase().includes(q) ||
+      w.name.toUpperCase().includes(q)
+    );
+  }
+
+  if (currentFilter === "near" && userPos) {
+    list.forEach(w => w._d = distKm(userPos, w));
+    list.sort((a, b) => a._d - b._d);
+    list = list.slice(0, 50);
+  } else if (userPos && !currentQuery) {
+    list.forEach(w => w._d = distKm(userPos, w));
+    list.sort((a, b) => a._d - b._d);
+  }
+
+  const showHint = !currentQuery && currentFilter === "all" && !userPos;
+  $("hint").style.display = showHint ? "block" : "none";
+
+  const ul = $("list");
+  if (list.length === 0) {
+    ul.innerHTML = `
+      <li class="no-results">
+        <div class="no-results-icon">⚲</div>
+        No wells found.<br>
+        Try a different query or filter.
+      </li>`;
+    return;
+  }
+
+  const show = list.slice(0, 200);
+  // CSS-safe class names (replace & and other invalid chars)
+  const safeStatus = (st) => st.replace(/[^A-Z0-9]/g, '');
+  ul.innerHTML = show.map((w, i) => `
+    <li class="well" data-i="${i}">
+      <div class="well-status s-${safeStatus(w.st)}"></div>
+      <div class="well-main">
+        <div class="well-id">${w.id}</div>
+        <div class="well-name">${escapeHTML(w.name)}</div>
+      </div>
+      <div class="well-meta">
+        <span class="badge ${safeStatus(w.st)}">${w.st}</span>
+        ${w._d !== undefined ? `<span class="well-dist">${formatDist(w._d)}</span>` : ''}
+      </div>
+    </li>
+  `).join("");
+
+  ul.querySelectorAll(".well").forEach(li => {
+    li.addEventListener("click", () => openSheet(show[parseInt(li.dataset.i)]));
+  });
+}
+
+function formatDist(km) {
+  if (km < 1) return Math.round(km * 1000) + ' m';
+  if (km < 10) return km.toFixed(1) + ' km';
+  return Math.round(km) + ' km';
+}
+
+function escapeHTML(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ========== SHEET ==========
+function openSheet(w) {
+  vibrate(15);
+  const gmaps = `https://www.google.com/maps/dir/?api=1&destination=${w.lat},${w.lon}&travelmode=driving`;
+  const amaps = `https://maps.apple.com/?daddr=${w.lat},${w.lon}&dirflg=d`;
+
+  const primary = isIOS ? amaps : gmaps;
+  const primaryLabel = isIOS ? "Apple Maps" : "Google Maps";
+  const secondary = isIOS ? gmaps : amaps;
+  const secondaryLabel = isIOS ? "Google Maps" : "Apple Maps";
+
+  $("sheet-content").innerHTML = `
+    <div class="sheet-title">${w.id}</div>
+    <div class="sheet-name">${escapeHTML(w.name)}</div>
+
+    <div class="sheet-grid">
+      <div class="sheet-cell">
+        <div class="sheet-label">Status</div>
+        <div class="sheet-value">${w.st}</div>
+      </div>
+      <div class="sheet-cell">
+        <div class="sheet-label">Fluid</div>
+        <div class="sheet-value">${w.fl || '—'}</div>
+      </div>
+      <div class="sheet-cell">
+        <div class="sheet-label">Licence</div>
+        <div class="sheet-value">${w.lic}</div>
+      </div>
+      <div class="sheet-cell">
+        <div class="sheet-label">${w._d !== undefined ? 'Distance' : 'Latitude'}</div>
+        <div class="sheet-value">${w._d !== undefined ? formatDist(w._d) : w.lat.toFixed(5)}</div>
+      </div>
+    </div>
+
+    <div class="sheet-actions">
+      <a class="btn" href="${primary}" target="_blank" rel="noopener" onclick="vibrate(20)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>
+        Navigate · ${primaryLabel}
+      </a>
+      <a class="btn secondary" href="${secondary}" target="_blank" rel="noopener">
+        ${secondaryLabel}
+      </a>
+      <button class="btn secondary" onclick="copyCoords(${w.lat},${w.lon})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        ${w.lat.toFixed(5)}, ${w.lon.toFixed(5)}
+      </button>
+    </div>
+  `;
+  $("backdrop").classList.add("open");
+  $("sheet").classList.add("open");
+}
+
+function copyCoords(lat, lon) {
+  const text = `${lat},${lon}`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      toast("Coordinates copied");
+      vibrate(20);
+    }).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); toast("Coordinates copied"); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+function closeSheet() {
+  $("backdrop").classList.remove("open");
+  $("sheet").classList.remove("open");
+}
+
+$("backdrop").addEventListener("click", closeSheet);
+
+// Swipe-down to close sheet
+let startY = null, currentY = null;
+$("sheet").addEventListener("touchstart", (e) => {
+  if ($("sheet").scrollTop === 0) startY = e.touches[0].clientY;
+}, { passive: true });
+$("sheet").addEventListener("touchmove", (e) => {
+  if (startY === null) return;
+  currentY = e.touches[0].clientY;
+  const delta = currentY - startY;
+  if (delta > 0) {
+    $("sheet").style.transform = `translateY(${delta}px)`;
+  }
+}, { passive: true });
+$("sheet").addEventListener("touchend", () => {
+  if (startY !== null && currentY !== null && currentY - startY > 100) {
+    closeSheet();
+  }
+  $("sheet").style.transform = "";
+  startY = null; currentY = null;
+});
+
+// ========== UTILS ==========
+function vibrate(pattern) {
+  if (navigator.vibrate) navigator.vibrate(pattern);
+}
+
+let toastTimer;
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+// iOS install hint
+if (isIOS && !isStandalone && !localStorage.getItem("hideInstall")) {
+  setTimeout(() => { $("install-banner").style.display = "flex"; }, 2500);
+}
+
+// Service worker for offline
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  });
+}
+
+// Dismiss keyboard on scroll (iOS)
+let lastScrollY = 0;
+window.addEventListener("scroll", () => {
+  if (Math.abs(window.scrollY - lastScrollY) > 50 && document.activeElement === $("q")) {
+    $("q").blur();
+  }
+  lastScrollY = window.scrollY;
+}, { passive: true });
+</script>
+</body>
+</html>
